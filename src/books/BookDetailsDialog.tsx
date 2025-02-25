@@ -66,13 +66,20 @@ const BookDetailsDialog: React.FC<ModalProps> = ({
     }
 
     // after send book details then fetch lated book detils
-    setTimeout(() => {
-      dispatch(fetchPlaybook(setSearchTerm));
-    }, 500);
+    if (setSearchTerm?.trim()) {
+      setTimeout(() => {
+        dispatch(fetchPlaybook(setSearchTerm));
+      }, 500);
+    }
 
     onSave(editedBook);
     onClose();
   };
+
+  // check first if all required fields are filled or not
+  const isFormValid = Object.values(editedBook).every(
+    (value) => typeof value === "string" && value.trim() !== ""
+  );
 
   return (
     <div className="modal-overlay">
@@ -169,7 +176,11 @@ const BookDetailsDialog: React.FC<ModalProps> = ({
             Cancel
           </button>
           {/* based on condition showing btn title */}
-          <button className="save-btn" onClick={handleSave}>
+          <button
+            className="save-btn"
+            onClick={handleSave}
+            disabled={isNew && !isFormValid}
+          >
             {isNew ? "Add Book" : "Save Changes"}
           </button>
         </div>
